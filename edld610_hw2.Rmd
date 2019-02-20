@@ -1,0 +1,62 @@
+---
+title: "edld610_hw2"
+author: "Cameron Kay, Lea Frank, Ashley Miller"
+date: "2/18/2019"
+output: html_document
+---
+
+```{r setup, include = FALSE}
+# load packages
+library(tidyverse)
+library(magrittr)
+library(lubridate)
+library(rio)
+library(here)
+library(bit64)
+
+# load data
+crime_data <- import(here("data/crime.csv"), setclass = "tibble") %>%
+  janitor::clean_names() %>%
+  mutate(first_occurrence_date = mdy_hms(first_occurrence_date),
+         last_occurrence_date = mdy_hms(last_occurrence_date))
+```
+
+### Part 1
+
+Select rows corresponding to a crime and reproduce the following plot. Note that because these are proportion data, I used the following formula to calculate the standard error $\sqrt{(p(1−p)/n}$.
+
+```{r part1_ash}
+
+```
+
+### Part 2
+
+Visualize the same relation, but displaying the uncertainty using an alternative method of your choosing.
+
+```{r part2_ash}
+
+```
+
+### Part 3
+
+Reproduce the following plot. Use the reported_date to extract the year.
+
+```{r part3_cam}
+
+```
+
+### Part 4
+
+See assignment.
+
+```{r part4_lea}
+
+```
+
+### Part 5
+
+Reproduce the following table.
+
+```{r part5_cam}
+
+```
