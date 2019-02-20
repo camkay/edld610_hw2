@@ -18,7 +18,8 @@ library(bit64)
 crime_data <- import(here("data/crime.csv"), setclass = "tibble") %>%
   janitor::clean_names() %>%
   mutate(first_occurrence_date = mdy_hms(first_occurrence_date),
-         last_occurrence_date = mdy_hms(last_occurrence_date))
+         last_occurrence_date  = mdy_hms(last_occurrence_date),
+         reported_date         = mdy_hms(reported_date))
 ```
 
 ### Part 1
