@@ -1,8 +1,15 @@
 ---
-title: "edld610_hw2"
+title: "EDLD 610: Homework 2"
 author: "Cameron Kay, Lea Frank, Ashley Miller"
 date: "2/18/2019"
-output: html_document
+output:
+  html_document:
+    theme: spacelab
+    toc: yes
+    toc_depth: 4
+    toc_float: yes
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r setup, include = FALSE}
@@ -13,6 +20,10 @@ library(lubridate)
 library(rio)
 library(here)
 library(bit64)
+#devtools::install_github("wilkelab/ungeviz")
+library(ungeviz)
+library(colorspace)
+library(broom)
 
 # load data
 crime_data <- import(here("data/crime.csv"), setclass = "tibble") %>%
@@ -26,7 +37,58 @@ crime_data <- import(here("data/crime.csv"), setclass = "tibble") %>%
 
 Select rows corresponding to a crime and reproduce the following plot. Note that because these are proportion data, I used the following formula to calculate the standard error $\sqrt{(p(1−p)/n}$.
 
-```{r part1_ash}
+```{r part1_ash, fig.height=6, fig.width=6}
+
+ash_prop_data <- crime_data %>%
+  mutate(offense_category_id = stringr::str_to_title(offense_category_id))
+
+ash_prop_data %<>%
+    mutate(offense_category_id = recode(offense_category_id, 
+                                      "Aggravated-Assault" = "Aggravated Assault",
+                                      "All-Other-Crimes" = "All Other Crimes",
+                                      "Auto-Theft" = "Auto Theft",
+                                      "Drug-Alcohol" = "Drug Alcohol",
+                                      "Other-Crimes-Against-Persons" = "Other Crimes Against Persons",
+                                      "Public-Disorder" = "Public Disorder",
+                                      "Sexual-Assault" = "Sexual Assault",
+                                      "Theft-From-Motor-Vehicle" = "Theft From Motor Vehicle",
+                                      "Traffic-Accident" = "Traffic Accident",
+                                      "White-Collar-Crime" = "White Collar Crime")) %>%
+  filter(offense_category_id != "Traffic Accident") %>%
+  select(-incident_id:-offense_type_id,
+         -first_occurrence_date,
+         -last_occurrence_date,
+         -incident_address:-geo_lat) %>%
+  filter(is_crime == '1')
+
+ash_prop_data %<>%
+  count(offense_category_id) %>%
+  mutate(prop = n/sum(n), 
+         prop_se = sqrt((prop*(1-prop)) / n))
+
+#str(props)
+  
+#Reproduce graph
+ggplot(ash_prop_data, aes(fct_reorder(offense_category_id, prop), prop)) +
+  geom_errorbar(aes(ymin = prop + qnorm(0.025)*prop_se, 
+                    ymax = prop + qnorm(0.975)*prop_se),
+                    color = "grey30",
+                    width = 0.4, 
+                    size = 0.4) +
+  geom_point(color = "#1295B2", alpha = 0.8, size = 2) +
+  theme_minimal() +
+  theme(axis.title = element_text(face = "bold"),
+        strip.text = element_text(face = "bold"),
+        plot.title = element_text(face = "bold")) +
+  labs(title = "Crimes in Denver",
+         x = "",
+         y = "Percentage",
+         caption = "Denver Crime Data Distributed via Kaggle
+https://www.kaggle.com/paultimothymooney/denver-crime-data") +
+  scale_y_continuous(breaks = c(0.0, 0.1, 0.2, 0.3),
+                     label = c("0.0%", "10.0%", "20.0%", "30.0%"),
+                     limits = c(-0.005, 0.3)) +
+  coord_flip()
 
 ```
 
@@ -34,7 +96,25 @@ Select rows corresponding to a crime and reproduce the following plot. Note that
 
 Visualize the same relation, but displaying the uncertainty using an alternative method of your choosing.
 
-```{r part2_ash}
+```{r part2_ash1}
+
+ggplot(ash_prop_data, aes(prop, fct_reorder(offense_category_id, prop))) +
+  stat_confidence_density(aes(moe = prop_se),
+                          fill = "#17C9CF",
+                          height = 0.6) +
+  geom_point() +
+  theme_minimal() +
+  theme(axis.title = element_text(face = "bold"),
+        strip.text = element_text(face = "bold"),
+        plot.title = element_text(face = "bold")) +
+  labs(title = "Crimes in Denver",
+         x = "",
+         y = "Percentage",
+         caption = "Denver Crime Data Distributed via Kaggle
+https://www.kaggle.com/paultimothymooney/denver-crime-data") +
+  scale_x_continuous(breaks = c(0.0, 0.05, 0.1, 0.15, 0.2, 0.25),
+                     label = c("0.0%", "5.0%", "10.0%", "15.0%", "20.0%", "25.0%"),
+                     limits = c(-0.005, 0.25))
 
 ```
 
