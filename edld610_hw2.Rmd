@@ -75,7 +75,7 @@ ggplot(ash_prop_data, aes(fct_reorder(offense_category_id, prop), prop)) +
                     color = "grey30",
                     width = 0.4, 
                     size = 0.4) +
-  geom_point(color = "#1295B2", alpha = 0.8, size = 2) +
+  geom_point(color = "#17C9CF", alpha = 0.8, size = 2) +
   theme_minimal() +
   theme(axis.title = element_text(face = "bold"),
         strip.text = element_text(face = "bold"),
@@ -102,7 +102,7 @@ ggplot(ash_prop_data, aes(prop, fct_reorder(offense_category_id, prop))) +
   stat_confidence_density(aes(moe = prop_se),
                           fill = "#17C9CF",
                           height = 0.6) +
-  geom_point() +
+  geom_point(alpha = 0.7) +
   theme_minimal() +
   theme(axis.title = element_text(face = "bold"),
         strip.text = element_text(face = "bold"),
