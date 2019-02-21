@@ -123,6 +123,36 @@ https://www.kaggle.com/paultimothymooney/denver-crime-data") +
 Reproduce the following plot. Use the reported_date to extract the year.
 
 ```{r part3_cam}
+# reproduce the plot
+crime_data %>%
+  mutate(year = year(reported_date),
+         is_crime = as.logical(is_crime)) %>%
+  group_by(year, district_id) %>%
+  summarize(crime_count = n()) %>%
+  mutate(prop = crime_count / sum(crime_count),
+         prop_se = sqrt((prop * (1 - prop)) / crime_count),
+         district_id = factor(district_id),
+         c_int_low = (prop + (prop_se * qnorm(.025))),
+         c_int_low = if_else(c_int_low < 0, 0, c_int_low),
+         c_int_high = (prop + (prop_se * qnorm(.975)))) %>%
+  ggplot(aes(x = reorder(district_id, prop), y = prop)) +
+    geom_col(aes(fill = district_id)) +
+    geom_errorbar(aes(ymin = c_int_low, ymax = c_int_high), color = "gray40", width = .5) +
+    facet_wrap(~year) +
+    coord_flip() +
+    scale_fill_manual(values = c("#0072B2", "#F0E442", "#CC79A7", "#009E73", "#56B4E9", "#D55E00", "#E69F00")) +
+    scale_y_continuous(breaks = c(0.0, 0.1, 0.2), limits = c(0, 0.255)) +
+    labs(title = "Crimes in Denver",
+         x = "District",
+         y = "Proportion",
+         caption = "Denver Crime Data Distributed by Kaggle \n https://www.kaggle.com/paultimothymooney/denver-crime-data") +
+    theme_minimal() +
+    theme(legend.position = "none",
+          axis.title = element_text(size = 16),
+          plot.title = element_text(size = 20),
+          plot.caption = element_text(size = 14),
+          axis.text = element_text(size = 14),
+          strip.text.x = element_text(size = 14))
 
 ```
 
