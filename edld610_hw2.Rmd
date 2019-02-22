@@ -58,8 +58,7 @@ ash_prop_data %<>%
   select(-incident_id:-offense_type_id,
          -first_occurrence_date,
          -last_occurrence_date,
-         -incident_address:-geo_lat) %>%
-  filter(is_crime == '1')
+         -incident_address:-geo_lat)
 
 ash_prop_data %<>%
   count(offense_category_id) %>%
