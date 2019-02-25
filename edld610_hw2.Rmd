@@ -48,16 +48,26 @@ ash_prop_data <- crime_data %>%
 
 ash_prop_data %<>%
     mutate(offense_category_id = recode(offense_category_id, 
-                                      "Aggravated-Assault" = "Aggravated Assault",
-                                      "All-Other-Crimes" = "All Other Crimes",
-                                      "Auto-Theft" = "Auto Theft",
-                                      "Drug-Alcohol" = "Drug Alcohol",
-                                      "Other-Crimes-Against-Persons" = "Other Crimes Against Persons",
-                                      "Public-Disorder" = "Public Disorder",
-                                      "Sexual-Assault" = "Sexual Assault",
-                                      "Theft-From-Motor-Vehicle" = "Theft From Motor Vehicle",
-                                      "Traffic-Accident" = "Traffic Accident",
-                                      "White-Collar-Crime" = "White Collar Crime")) %>%
+                                      "Aggravated-Assault" = 
+                                            "Aggravated Assault",
+                                      "All-Other-Crimes" = 
+                                            "All Other Crimes",
+                                      "Auto-Theft" = 
+                                            "Auto Theft",
+                                      "Drug-Alcohol" = 
+                                            "Drug Alcohol",
+                                      "Other-Crimes-Against-Persons" = 
+                                            "Other Crimes Against Persons",
+                                      "Public-Disorder" = 
+                                            "Public Disorder",
+                                      "Sexual-Assault" = 
+                                            "Sexual Assault",
+                                      "Theft-From-Motor-Vehicle" = 
+                                            "Theft From Motor Vehicle",
+                                      "Traffic-Accident" = 
+                                            "Traffic Accident",
+                                      "White-Collar-Crime" = 
+                                            "White Collar Crime")) %>%
   filter(offense_category_id != "Traffic Accident") %>%
   select(-incident_id:-offense_type_id,
          -first_occurrence_date,
@@ -116,7 +126,8 @@ ggplot(ash_prop_data, aes(prop, fct_reorder(offense_category_id, prop))) +
          caption = "Denver Crime Data Distributed via Kaggle
 https://www.kaggle.com/paultimothymooney/denver-crime-data") +
   scale_x_continuous(breaks = c(0.0, 0.05, 0.1, 0.15, 0.2, 0.25),
-                     label = c("0.0%", "5.0%", "10.0%", "15.0%", "20.0%", "25.0%"),
+                     label = c("0.0%", "5.0%", "10.0%", 
+                               "15.0%", "20.0%", "25.0%"),
                      limits = c(-0.005, 0.25))
 
 ```
