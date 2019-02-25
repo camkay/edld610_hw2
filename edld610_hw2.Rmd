@@ -9,7 +9,7 @@ output:
     toc_depth: 4
     toc_float: yes
 editor_options: 
-  chunk_output_type: console
+  chunk_output_type: inline
 ---
 
 ```{r setup, include = FALSE}
@@ -66,8 +66,7 @@ ash_prop_data %<>%
   select(-incident_id:-offense_type_id,
          -first_occurrence_date,
          -last_occurrence_date,
-         -incident_address:-geo_lat) %>%
-  filter(is_crime == '1')
+         -incident_address:-geo_lat)
 
 ash_prop_data %<>%
   count(offense_category_id) %>%
@@ -192,7 +191,43 @@ crime_data %>%
 See assignment.
 
 ```{r part4_lea}
+# Limit data
+crime_count <- crime_data %>% 
+  mutate(year = year(reported_date)) %>% 
+  count(year, district_id)
 
+# Fit model
+m <- glm(n ~ I(factor(district_id)) + I(year-2014), data = crime_count)
+tidy_m <- tidy(m)
+
+# Generate quantiles
+quantiles <- qnorm(ppoints(20),
+      mean = tidy_m$estimate[4],
+      sd = tidy_m$std.error[4])
+
+quantiles <- tibble(quantiles = quantiles,
+                    d4_less = quantiles < 0)
+
+# Dot plot
+ggplot(quantiles, aes(x = quantiles)) +
+  geom_dotplot(aes(fill = d4_less), binwidth = 1200) +
+  colorblindr::scale_fill_OkabeIto(guide = FALSE) +
+  theme_minimal(base_size = 14) +
+  geom_vline(xintercept = 0,
+             color = "#E34323",
+             size = 1.5) +
+  annotate(geom = "text", label = "District 4",
+           y = .6, x = -6800, size = 8, color = "#777675") +
+  annotate(geom = "text", label = "District 1",
+           y = .6, x = 1600, size = 8, color = "#777675") +
+  theme(panel.grid.major.y = element_blank(),
+        panel.grid.minor.y = element_blank(),
+        axis.title.y = element_blank(),
+        axis.text.y = element_blank()) +
+  labs(title = "Difference in total number of crimes",
+       subtitle = "District 4 Crimes - District 1 Crimes",
+       x = "Difference in total number of crimes",
+       caption = "Each ball represents 5% probability")
 ```
 
 ### Part 5
