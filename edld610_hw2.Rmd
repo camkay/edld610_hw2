@@ -195,9 +195,15 @@ crime_data %>%
 
 ### Part 4
 
-See assignment.
+Limit your data to the following. Note that only rows corresponding to a crime have been retained, and I have counted the number of rows (crimes) for each district in each year. I have stored this data frame in an object called counts
 
-```{r part4_lea}
+  + Fit the following model
+  + Extract the output using broom::tidy
+  + Divide the probability space, [0, 1], into even bins of your choosing. For example, for 20 bins I could run the following
+  + Replicate a plot like the following, but displaying the likelihood of the crime rate differences between District 4 and District 1 (e.g., you will need to use tidied$estimate[4] and  tidied$std.error[4]). Make sure to put the values in a data frame, and create a new variable stating whether the difference is greater than zero (which you will use to fill by).
+      + Note: Your probabilities will not directly correspond with the p values, which are essentially twice the probability you are displaying (because the test is two-tailed).
+
+```{r part4_lea, fig.height=6.5, fig.width=7}
 # Limit data
 crime_count <- crime_data %>% 
   filter(is_crime == 1) %>%
@@ -220,22 +226,27 @@ quantiles <- tibble(quantiles = quantiles,
 ggplot(quantiles, aes(x = quantiles)) +
   geom_dotplot(aes(fill = d4_less), binwidth = 1200) +
   colorblindr::scale_fill_OkabeIto(guide = FALSE) +
-  theme_minimal(base_size = 14) +
+  theme_minimal() +
   geom_vline(xintercept = 0,
              color = "#E34323",
              size = 1.5) +
   annotate(geom = "text", label = "District 4",
-           y = .6, x = -6800, size = 8, color = "#777675") +
+           y = .6, x = -4400, size = 9, color = "#777675") +
   annotate(geom = "text", label = "District 1",
-           y = .6, x = 1600, size = 8, color = "#777675") +
+           y = .6, x = 2000, size = 9, color = "#777675") +
   theme(panel.grid.major.y = element_blank(),
         panel.grid.minor.y = element_blank(),
         axis.title.y = element_blank(),
-        axis.text.y = element_blank()) +
+        axis.text.y = element_blank(),
+        plot.title = element_text(face = "bold", size = 16),
+        plot.subtitle = element_text(size = 12)) +
   labs(title = "Difference in total number of crimes",
        subtitle = "District 4 Crimes - District 1 Crimes",
        x = "Difference in total number of crimes",
-       caption = "Each ball represents 5% probability")
+       caption = "Each ball represents 5% probability") +
+  scale_x_continuous(breaks = c(-5000, -3500, -2000, -500, 1000, 2500),
+                     label = c("-5000", "-3500", "-2000", "-500", "1000", "2500"),
+                     limits = c(-5000, NA))
 ```
 
 ### Part 5
