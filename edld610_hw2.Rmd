@@ -200,6 +200,7 @@ See assignment.
 ```{r part4_lea}
 # Limit data
 crime_count <- crime_data %>% 
+  filter(is_crime == 1) %>%
   mutate(year = year(reported_date)) %>% 
   count(year, district_id)
 
