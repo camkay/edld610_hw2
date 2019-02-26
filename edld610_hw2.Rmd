@@ -83,15 +83,16 @@ ash_prop_data %<>%
   
 #Reproduce graph
 ggplot(ash_prop_data, aes(fct_reorder(offense_category_id, prop), prop)) +
-  geom_errorbar(aes(ymin = prop + qnorm(0.025)*prop_se, 
-                    ymax = prop + qnorm(0.975)*prop_se),
-                    color = "grey30",
-                    width = 0.4, 
-                    size = 0.4) +
+  geom_errorbar(aes(ymin = ifelse(prop - 1.96*prop_se < 0,
+                                  0,
+                                  prop - 1.96*prop_se),
+                    ymax = prop + 1.96*prop_se),
+                color = "gray30",
+                width = 0.4,
+                size = 0.4) +
   geom_point(color = "#17C9CF", alpha = 0.8, size = 2) +
   theme_minimal() +
-  theme(axis.title = element_text(face = "bold"),
-        strip.text = element_text(face = "bold"),
+  theme(strip.text = element_text(face = "bold"),
         plot.title = element_text(face = "bold")) +
   labs(title = "Crimes in Denver",
          x = "",
@@ -100,7 +101,7 @@ ggplot(ash_prop_data, aes(fct_reorder(offense_category_id, prop), prop)) +
 https://www.kaggle.com/paultimothymooney/denver-crime-data") +
   scale_y_continuous(breaks = c(0.0, 0.1, 0.2, 0.3),
                      label = c("0.0%", "10.0%", "20.0%", "30.0%"),
-                     limits = c(-0.005, 0.3)) +
+                     limits = c(0.0, 0.3)) +
   coord_flip()
 
 ```
@@ -117,18 +118,17 @@ ggplot(ash_prop_data, aes(prop, fct_reorder(offense_category_id, prop))) +
                           height = 0.6) +
   geom_point(alpha = 0.7) +
   theme_minimal() +
-  theme(axis.title = element_text(face = "bold"),
-        strip.text = element_text(face = "bold"),
+  theme(strip.text = element_text(face = "bold"),
         plot.title = element_text(face = "bold")) +
   labs(title = "Crimes in Denver",
-         x = "",
-         y = "Percentage",
+         x = "Percentage",
+         y = "",
          caption = "Denver Crime Data Distributed via Kaggle
 https://www.kaggle.com/paultimothymooney/denver-crime-data") +
   scale_x_continuous(breaks = c(0.0, 0.05, 0.1, 0.15, 0.2, 0.25),
                      label = c("0.0%", "5.0%", "10.0%", 
                                "15.0%", "20.0%", "25.0%"),
-                     limits = c(-0.005, 0.25))
+                     limits = c(0.0, 0.25))
 
 ```
 
