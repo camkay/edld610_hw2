@@ -290,14 +290,7 @@ crime_data %>%
   tab_header(title = "Crimes Against Persons in Denver: 2014 to Present",
              subtitle = md("*Sample of three districts*")) %>%
   # add caption
-  tab_source_note(source_note = md("Denver Crime Data Distributed via [Kaggle](https://www.kaggle.com/paultimothymooney/denver-crime-data)")) #%>%
-  # failed to match font
-  #tab_style(style = cells_styles(text_font = "pd"), locations = list(cells_title("title"),
-  #                                                                   cells_title("subtitle"),
-  #                                                                   cells_title("spanner"),
-  #                                                                   cells_column_labels(columns = 1:6),
-  #                                                                   cells_data()))
-
+  tab_source_note(source_note = md("Denver Crime Data Distributed via [Kaggle](https://www.kaggle.com/paultimothymooney/denver-crime-data)"))
 
 
 
